@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.wong.schedule.module.test.mybatis.mapper.MybatisTestMapper">
+	<select id="findEntity" resultType="string">
+		select job_class from gsms_schedule_job where job_name = #{jobName}
+	</select>
+</mapper>

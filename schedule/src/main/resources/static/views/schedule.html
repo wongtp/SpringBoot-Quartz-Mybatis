@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>定时任务管理</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="external nofollow" type="text/css"></link>
+</head>
+
+<body ng-app="schedule" ng-controller="scheduleController">
+	<div>
+		<h2>任务信息：</h2>
+		<table class="table table-bordered" style="text-align: center">
+			<thead>
+				<tr>
+					<th>任务名称</th>
+					<th>任务分组</th>
+					<th>cron</th>
+					<th>执行频率（秒）</th>
+					<th>总运行次数</th>
+					<th>延迟启动（秒）</th>
+					<th>jobClass</th>
+					<th>执行参数</th>
+					<th>状态</th>
+					<th>备注</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in list">
+					<td>{{item.jobName}}</td>
+					<td>{{item.jobGroup}}</td>
+					<td>{{item.cron}}</td>
+					<td>{{item.fixedRate}}</td>
+					<td>{{item.count}}</td>
+					<td>{{item.initialDelay}}</td>
+					<td>{{item.jobClass}}</td>
+					<td>{{item.param}}</td>
+					<td>
+				        <button ng-if="item.status" type="button" class="btn btn-success">运行中</button>
+                        <button ng-if="!item.status" type="button" class="btn btn-warning">已暂停</button>
+					</td>
+					<td>{{item.comment}}</td>
+					<td>
+						<button class="btn btn-warning" " ng-click="update($index)">修改</button>
+                        <button ng-if="item.status" type="button" class="btn btn-success" ng-click="changeStatus($index)">暂停</button>
+                        <button ng-if="!item.status" type="button" class="btn btn-warning" ng-click="changeStatus($index)">启用</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- 修改信息 -->
+		<div class="modal" id="modal-2">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="close" data-dismiss="modal">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<h3 class="modal-title">修改信息</h3>
+					</div>
+					<div class="modal-body">
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">任务名称</span>
+				            <input ng-model="prod.jobName" value="{{prod.jobName}}" readonly type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">任务分组</span>
+				            <input ng-model="prod.jobGroup" value="{{prod.jobGroup}}" readonly type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">cron</span>
+				            <input ng-model="prod.cron" value="{{prod.cron}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">执行频率（秒）</span>
+				            <input ng-model="prod.fixedRate" value="{{prod.fixedRate}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group"> 
+							<span class="col-xs-4 col-sm-4 text-right">总运行次数</span>
+				            <input ng-model="prod.count" value="{{prod.count}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">延迟启动（秒）</span>
+				            <input ng-model="prod.initialDelay" value="{{prod.initialDelay}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">jobClass</span>
+				            <input ng-model="prod.jobClass" value="{{prod.jobClass}}" readonly type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">执行参数</span>
+				            <input ng-model="prod.param" value="{{prod.param}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">状态</span>
+				            <input ng-model="prod.status" value="{{prod.status}}" type="text" class="form-control">
+				        </div>
+						<div class="input-group">
+							<span class="col-xs-4 col-sm-4 text-right">备注</span>
+				            <input ng-model="prod.comment" value="{{prod.comment}}" type="text" class="form-control">
+				        </div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button class="btn btn-success" ng-click="ensure()">确定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('schedule', []);
+		app.controller('scheduleController', function($scope, $http) {
+			$http({
+                method: 'GET',
+                url: '/quartz/fetchAllJob'
+            }).then(function successCallback(resp) {
+            	    $scope.list = resp.data;
+                }, function errorCallback(resp) {}
+            );
+			
+			//定义一个空对象，用于保存和修改数据时临时存储
+			$scope.prod = {};
+			//定义一个单击删除按钮时触发的事件，用于删除选中行
+			$scope.changeStatus = function($index) {
+				if ($index >= 0) {
+					if (confirm("确定？")) {
+						$http({
+			                method: 'GET',
+			                url: '/quartz/changeStatus?status=' + !$scope.list[$index].status + "&jobName=" + $scope.list[$index].jobName
+			            }).then(function successCallback(resp) {
+			                	$scope.list[$index].status = !$scope.list[$index].status;
+			                },  function errorCallback(resp) {}
+			            );
+					}
+				}
+			};
+		});
+	</script>
+</body>
+</html>
