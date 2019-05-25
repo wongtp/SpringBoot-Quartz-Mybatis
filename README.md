@@ -9,8 +9,8 @@
 **定时任务管理页面：**
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190327221504202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L29jcDExNA==,size_16,color_FFFFFF,t_70)
 **技术选型：**
- 1. SpringBoot 2.1.3
- 2. Quartz 2.3
+ 1. SpringBoot 2.1.4
+ 2. Quartz 2.3.1
  3. Mybatis 3.5
  4. ~~redis客户端~~ （已经整合了，但出于简单考虑，代码已经被删掉）
  5. druid 1.1.14
